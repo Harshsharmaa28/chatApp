@@ -4,7 +4,7 @@ import { User } from '../models/user.model.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const verifyJWT = asyncHandler( async(req,_,next) => {
+export const verifyJWT = asyncHandler( async(req,res,next) => {
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
 
@@ -23,7 +23,9 @@ export const verifyJWT = asyncHandler( async(req,_,next) => {
         req.user = user;
         next()
     } catch (error) {
-        console.log(error)
-        throw new Error("Please Login In First")
+        return res.status(400).json({
+            success: false,
+            message: "Please login First"
+        })
     }
 })
