@@ -59,33 +59,35 @@ const accessChat = asyncHandler(async (req, res) => {
 
 const fetchchats = asyncHandler(async (req, res) => {
     try {
-        Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+        const results = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("latestMessage")
-            .sort({ update: -1 })
-            .then(async (results) => {
-                results = await User.populate(results, {
-                    path: "latestMessage.sender",
-                    select: "name pic email",
-                })
-            });
+            .sort({ updatedAt: -1 });
 
-        res.status(200).send(results);
+        const populatedResults = await User.populate(results, {
+            path: "latestMessage.sender",
+            select: "name pic email",
+        });
+
+        res.status(200).send(populatedResults);
     } catch (error) {
         res.status(400).json({
-            sucess: true,
-            message: "Some error Ocurred Please try again later"
-        })
+            success: false,
+            message: "Some error occurred. Please try again later.",
+            error: error.message
+        });
     }
-})
+});
+
 
 const createdGroupChat = asyncHandler(async (req, res) => {
+    console.log(req.body.name)
     if (!req.body.users || !req.body.name) {
         return res.status(400).send({ message: "Please Fill all the feilds" });
     }
 
-    let users = JSON.parse(req.body.users);
+    let users = req.body.users;
 
     if (users.length < 2) {
         res.status(400).json({
@@ -95,7 +97,6 @@ const createdGroupChat = asyncHandler(async (req, res) => {
     }
 
     users.push(req.user);
-
     try {
         const groupChat = Chat.create({
             chatName: req.body.name,
@@ -105,17 +106,18 @@ const createdGroupChat = asyncHandler(async (req, res) => {
         })
 
         const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
-            .populate("Users", "-password")
+            .populate("users", "-password")
             .populate("groupAdmin", "-password");
 
-        res.status(200).json({
-            message: "Group Created Successfully"
+        return res.status(200).json({
+            success: true,
+            message: "Group Created Successfully",
+            fullGroupChat: fullGroupChat
         })
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             sucess: false,
             message: "Something Went wrong Try again Later",
-            fullGroupChat
         })
     }
 })

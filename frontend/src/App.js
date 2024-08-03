@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Login } from './components/Login/login';
+import { SignUp } from './components/Register/signup';
+import { Chat } from './components/Chat/Chat';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import { useEffect } from 'react';
 
 function App() {
+  const navigate = useNavigate();
+  useEffect(()=>{
+    navigate('/chat')
+  },[])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        <Route path="/" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path='/chat' element={<PrivateRoute element={Chat} />}/>
+      </Routes>
     </div>
   );
 }

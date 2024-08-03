@@ -1,3 +1,4 @@
+import { compareSync } from "bcrypt";
 import { User } from "../models/user.model.js";
 import asyncHandler from 'express-async-handler'
 
@@ -11,21 +12,23 @@ const getAllUser = asyncHandler(async (req, res) => {
                 { email: { $regex: req.query.search, $options: "i" } },
             ],
         }
-        : {}
+        : {} 
 
-    const user = await User.find(keyword).find({ _id: { $ne: req.user._id } })
-
-    res.send(user)
+        // console.log(keyword)
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    return res.status(200).json({
+        success: true,
+        users
+    })
 })
 
 const registerUSer = asyncHandler(async (req, res) => {
     const { name, email, password, avatar } = req.body;
-
     if (!name || !email || !password) {
-        res.status(400).json({
+        return res.status(400).json({
             message: "All fields are required"
         })
-        throw new Error("All the field are required");
+        // console.log("All the field are required");
     }
 
     const exsistedUser = await User.findOne({ email });
@@ -62,14 +65,16 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-        res.status(400)
-        throw new Error("All field are Required");
+        res.status(400).json({
+            message: "All fields are required"
+        })
     }
     const user = await User.findOne({ email });
 
     if (!user) {
-        res.status(400)
-        throw new Error("User not exsist")
+        res.status(400).json({
+            message: "User not Exsist"
+        })
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
@@ -93,7 +98,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken)
+        .cookie("accessToken", accessToken,options)
         .json({
             success: true,
             message: "User logged In successfully",

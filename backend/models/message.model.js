@@ -5,18 +5,22 @@ const messageSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
-    message: {
+    content: {
         type: String,
-        trim : true
+        trim: true
     },
-    readBy:{
+    chat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chat"
+    },
+    readBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 )
 
-export const Message = mongoose.model("Message",messageSchema);
+export const Message = mongoose.model("Message", messageSchema);
