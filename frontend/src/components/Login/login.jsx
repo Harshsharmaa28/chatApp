@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -32,6 +35,7 @@ export const Login = () => {
       const data = await response.json();
       // console.log(data.accessToken)
       if (response.ok) {
+        toast.success("Login successfully")
         localStorage.setItem("userInfo",JSON.stringify(data))
         navigate('/chat')
         setFormData({
@@ -40,9 +44,11 @@ export const Login = () => {
         });
         console.log('Login successful:', data);
       } else {
+        toast.error(data.message)
         console.error('Login failed:', data);
       }
     } catch (error) {
+      toast.error("Server not responding")
       console.error(error.message);
     }
   };

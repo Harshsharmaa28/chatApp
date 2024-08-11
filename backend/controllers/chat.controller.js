@@ -43,7 +43,7 @@ const accessChat = asyncHandler(async (req, res) => {
                 "users",
                 "-password"
             );
-            res.status(200).json({
+            return res.status(200).json({
                 sucess: true,
                 message: " Chat created Succesfully",
                 fullChat

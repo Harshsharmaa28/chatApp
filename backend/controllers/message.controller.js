@@ -11,7 +11,7 @@ const allMessage = asyncHandler(async (req, res) => {
 
         res.json(message);
     } catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message : error.message
         })

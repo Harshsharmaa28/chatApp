@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ClipboardListIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CreateGroup from './CreateGroup';
+import Messages from './Messages';
+import { toast } from 'react-toastify';
 
 export const Chat = () => {
     const navigate = useNavigate();
 
     const [selectedChat, setSelectedChat] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [inputMessage, setInputMessage] = useState('');
+    const [selectedUserName, setselectedUserName] = useState("");
     const [searchQuery, setSearchQuery] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState(400);
@@ -16,9 +17,30 @@ export const Chat = () => {
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
     const sidebarRef = useRef(null);
 
+
+    // useEffect(() => {
+    //     const getUserchats = async () => {
+    //         try {
+    //             const userChats = await fetch("http://localhost:8000/api/v1/chats/getChats", {
+    //                 method: "GET",
+    //                 headers: {
+    //                     'Content-type': 'Application/json',
+    //                 },
+    //                 credentials: 'include'
+    //             })
+
+    //             const data = await userChats.json();
+    //             setContacts(data);
+    //             console.log(data)
+    //         } catch (error) {
+    //             toast.error(error.message)
+    //         }
+    //     }
+    // }, [])
+
     const handleUserSearch = async (e) => {
         try {
-            const query = e.target.value;
+            const query = e.target.value || "";
             setSearchQuery(query);
 
             const result = await fetch(`http://localhost:8000/api/v1/users/?search=${encodeURIComponent(query)}`, {
@@ -32,34 +54,48 @@ export const Chat = () => {
             const data = await result.json();
             setContacts(data.users);
         } catch (error) {
+            toast.error(error.message)
             console.error(error.message);
         }
     };
-
     const filteredContacts = contacts?.filter((contact) =>
         contact.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleChatSelect = (contact) => {
-        setSelectedChat(contact);
-        console.log(contact);
-        setMessages([ // Pre-load messages for demo purposes
-            { sender: 'Alice', text: 'Hey there!' },
-            { sender: 'You', text: 'Hello! How are you?' },
-        ]);
-    };
-
-    const handleSendMessage = (e) => {
-        e.preventDefault();
-        if (inputMessage.trim()) {
-            setMessages([...messages, { sender: 'You', text: inputMessage }]);
-            setInputMessage('');
+    const handleChatSelect = async (contact) => {
+        // setSelectedChat(contact);
+        // console.log(contact);
+        try {
+            setselectedUserName(contact.name)
+            const createChat = await fetch("http://localhost:8000/api/v1/chats/", {
+                method: "POST",
+                headers: {
+                    'Content-type': 'Application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ userId: contact })
+            })
+            const data = await createChat.json();
+            console.log("Created chat : ", data)
+            setSelectedChat(data._id)
+            // console.log(selectedChat)
+        } catch (error) {
+            toast.error(error.message)
+            console.error(error.message)
         }
     };
 
+    // const handleSendMessage = (e) => {
+    //     e.preventDefault();
+    //     if (inputMessage.trim()) {
+    //         setMessages([...messages, { sender: 'You', text: inputMessage }]);
+    //         setInputMessage('');
+    //     }
+    // };
     const handleLogout = () => {
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('userInfo');
         navigate('/login');
+        toast.info("Loged out Successfully")
     };
 
     const handleMouseDown = (e) => {
@@ -143,37 +179,7 @@ export const Chat = () => {
             {/* Chat Area */}
             <div className="w-full flex flex-col">
                 {selectedChat ? (
-                    <>
-                        <div className="p-4 bg-gray-200 border-b border-gray-300">
-                            <h3 className="text-xl font-semibold">{selectedChat.name}</h3>
-                        </div>
-                        <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-                            {messages?.map((message, index) => (
-                                <div
-                                    key={index}
-                                    className={`flex ${message.sender === 'You' ? 'justify-end' : 'justify-start'} mb-2`}
-                                >
-                                    <div className={`p-2 rounded-lg ${message.sender === 'You' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
-                                        <p>{message.text}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <form onSubmit={handleSendMessage} className="p-4 bg-gray-200 border-t border-gray-300">
-                            <div className="flex items-center">
-                                <input
-                                    type="text"
-                                    placeholder="Type a message"
-                                    className="flex-1 p-2 rounded-lg border border-gray-300"
-                                    value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
-                                />
-                                <button type="submit" className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                    Send <ArrowRight size={16} />
-                                </button>
-                            </div>
-                        </form>
-                    </>
+                    <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />
                 ) : (
                     <div className="flex items-center flex-col justify-center h-full text-gray-500">
                         <p>Select a chat to start messaging</p>
@@ -184,7 +190,7 @@ export const Chat = () => {
 
             {/* Group Creation Modal */}
             {isGroupModalOpen && (
-                <CreateGroup contacts={contacts} setIsGroupModalOpen={setIsGroupModalOpen}/>
+                <CreateGroup contacts={contacts} setIsGroupModalOpen={setIsGroupModalOpen} />
             )}
         </div>
     );
