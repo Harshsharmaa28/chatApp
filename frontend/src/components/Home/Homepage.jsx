@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export const Homepage = () => {
     return (
         <div>
-            <img className=' absolute w-screen h-screen object-cover -z-10' src="./assets/Home2.png" alt="" />
+            <img className=' absolute w-screen h-screen object-cover -z-10' src="./assets/Home.jpg" alt="" />
             <div className="min-h-screen flex flex-col items-center justify-center">
                 <div className=" p-8 rounded-lg shadow-md w-full max-w-md">
                     <h1 className="text-3xl font-bold text-center text-white mb-4">Welcome to ChatVerse</h1>
