@@ -13,21 +13,22 @@ import { createServer } from "http";
 dotenv.config();
 const app = express();
 // const server = createServer(app);
-const server = app.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 5000
+const server = app.listen(PORT, () => {
     console.log(`server is Running succesfully on port ${process.env.PORT}`)
 })
 
 const io = new Server(server, {
     pingTimeout: 6000,
     cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     },
 })
 app.use(express.json());
 app.use(cors({
     // origin: process.env.CORS_ORIGIN,
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN,
     credentials: true
 }))
 
@@ -47,22 +48,22 @@ io.on("connection", (socket) => {
     console.log("User connnected with id :", socket.id)
 
     socket.on("setup", (userData) => {
-        console.log(userData.loggedInUser.name)
-        socket.join(userData.loggedInUser._id);
+        // console.log(userData.loggedInUser.name)
+        // socket.join(userData.loggedInUser._id);
         socket.emit("connected");
     });
 
     socket.on("join chat", (room) => {
-        console.log("join kar liya hai")
+        // console.log("join kar liya hai")
         socket.join(room);
-        console.log("User joined room :", room);
+        // console.log("User joined room :", room);
     })
 
     socket.on("new message", (newMessageRecieved) => {
         // console.log("server received message:", newMessageRecieved);
         // Broadcast to everyone in the room except the sender
         socket.to(newMessageRecieved.chatId).emit("message received", newMessageRecieved);
-        console.log("aage bhej diya hai")
+        // console.log("aage bhej diya hai")
     });
 
 
