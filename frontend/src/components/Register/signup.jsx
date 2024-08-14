@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const SignUp = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -21,7 +22,7 @@ export const SignUp = () => {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://localhost:8000/api/v1/users/signup", {
+    const response = await fetch(`${BASE_URL}/users/signup`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'

@@ -4,6 +4,7 @@ import { EditProfile } from './EditProfile';
 import { io } from "socket.io-client";
 
 const Messages = ({ selectedChat, selectedUserName }) => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [socketConnected, setSocketConnected] = useState(false);
@@ -17,7 +18,8 @@ const Messages = ({ selectedChat, selectedUserName }) => {
     const socket = useRef(null); // Use useRef to keep the socket instance
     const currentUser = JSON.parse(localStorage.getItem("userInfo")).loggedInUser._id;
     const User = JSON.parse(localStorage.getItem("userInfo"));
-    const endPoint = "http://localhost:8000";
+    const endPoint = process.env.REACT_APP_END_POINT;
+    console.log(endPoint)
 
     useEffect(() => {
         // Initialize socket connection
@@ -59,7 +61,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
     const getChat = async () => {
         if (!selectedChat) return;
         try {
-            const fetchMessages = await fetch(`http://localhost:8000/api/v1/messages/${selectedChat}`, {
+            const fetchMessages = await fetch(`${BASE_URL}/messages/${selectedChat}`, {
                 credentials: 'include'
             });
             const data = await fetchMessages.json();
@@ -75,7 +77,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
         if (!inputMessage.trim()) return;
 
         try {
-            const send = await fetch("http://localhost:8000/api/v1/messages/send", {
+            const send = await fetch(`${BASE_URL}/messages/send`, {
                 method: "POST",
                 headers: {
                     'Content-type': 'Application/json',

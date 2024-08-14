@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export const Login = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  // console.log(BASE_URL)
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -23,7 +25,7 @@ export const Login = () => {
     e.preventDefault();
     // Here you would typically send formData to your API for authentication
     try {
-      const response = await fetch("http://localhost:8000/api/v1/users/login",{
+      const response = await fetch(`${BASE_URL}/users/login`,{
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

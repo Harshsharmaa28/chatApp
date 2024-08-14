@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { CircleX } from 'lucide-react';
 
 export const Chat = () => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const navigate = useNavigate();
 
     const [selectedChat, setSelectedChat] = useState(null);
@@ -32,7 +33,7 @@ export const Chat = () => {
             const query = e.target.value || "";
             setSearchQuery(query);
 
-            const result = await fetch(`http://localhost:8000/api/v1/users/?search=${encodeURIComponent(query)}`, {
+            const result = await fetch(`${BASE_URL}/users/?search=${encodeURIComponent(query)}`, {
                 method: "GET",
                 headers: {
                     'Content-type': 'Application/json',
@@ -61,7 +62,7 @@ export const Chat = () => {
         // console.log(contact);
         try {
             setselectedUserName(contact.name)
-            const createChat = await fetch("http://localhost:8000/api/v1/chats/", {
+            const createChat = await fetch(`${BASE_URL}/chats/`, {
                 method: "POST",
                 headers: {
                     'Content-type': 'Application/json',

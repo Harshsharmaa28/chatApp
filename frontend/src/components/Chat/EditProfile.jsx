@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 export const EditProfile = ({ isOpen, onClose, user, onSave }) => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL
     const [username, setUsername] = useState(user.name);
     const [avatar, setAvatar] = useState(user.avatar);
 

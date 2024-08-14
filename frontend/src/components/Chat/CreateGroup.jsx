@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 
 const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const [groupName, setGroupName] = useState('');
     const [selectedMembers, setSelectedMembers] = useState([]);
 
@@ -11,7 +12,7 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
             console.log('Group Created:', groupName, selectedMembers);
             // Here you would handle the group creation logic
             try {
-                const createGroup = await fetch("http://localhost:8000/api/v1/chats/group",{
+                const createGroup = await fetch(`${BASE_URL}/chats/group`,{
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
