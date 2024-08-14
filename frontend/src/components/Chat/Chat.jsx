@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ClipboardListIcon } from 'lucide-react';
+import { AlignJustify, ArrowRight, ClipboardListIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CreateGroup from './CreateGroup';
 import Messages from './Messages';
 import { toast } from 'react-toastify';
+import { CircleX } from 'lucide-react';
 
 export const Chat = () => {
     const navigate = useNavigate();
@@ -12,32 +13,20 @@ export const Chat = () => {
     const [selectedUserName, setselectedUserName] = useState("");
     const [searchQuery, setSearchQuery] = useState('');
     const [isDragging, setIsDragging] = useState(false);
-    const [sidebarWidth, setSidebarWidth] = useState(400);
+    const [sidebarWidth, setSidebarWidth] = useState(() =>{
+        const screenWidth = window.innerWidth;
+          if (screenWidth>780) {
+            return 400;
+          }
+          else {
+            return 300;
+          }
+    });
     const [contacts, setContacts] = useState([]);
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+    const [handlesidebar, setHandlesidebar] = useState(false);
     const sidebarRef = useRef(null);
-
-
-    // useEffect(() => {
-    //     const getUserchats = async () => {
-    //         try {
-    //             const userChats = await fetch("http://localhost:8000/api/v1/chats/getChats", {
-    //                 method: "GET",
-    //                 headers: {
-    //                     'Content-type': 'Application/json',
-    //                 },
-    //                 credentials: 'include'
-    //             })
-
-    //             const data = await userChats.json();
-    //             setContacts(data);
-    //             console.log(data)
-    //         } catch (error) {
-    //             toast.error(error.message)
-    //         }
-    //     }
-    // }, [])
-
+    
     const handleUserSearch = async (e) => {
         try {
             const query = e.target.value || "";
@@ -58,6 +47,11 @@ export const Chat = () => {
             console.error(error.message);
         }
     };
+
+    useEffect(() => {
+        handleUserSearch({ target: { value: "" } });
+    }, []);
+
     const filteredContacts = contacts?.filter((contact) =>
         contact.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -85,13 +79,6 @@ export const Chat = () => {
         }
     };
 
-    // const handleSendMessage = (e) => {
-    //     e.preventDefault();
-    //     if (inputMessage.trim()) {
-    //         setMessages([...messages, { sender: 'You', text: inputMessage }]);
-    //         setInputMessage('');
-    //     }
-    // };
     const handleLogout = () => {
         localStorage.removeItem('userInfo');
         navigate('/login');
@@ -126,13 +113,15 @@ export const Chat = () => {
         };
     }, [isDragging]);
 
+    // console.log(handlesidebar)
+
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen vsm:max-sm:">
             {/* Sidebar */}
             <div
                 ref={sidebarRef}
                 style={{ width: sidebarWidth }}
-                className="relative bg-gray-800 text-white flex flex-col"
+                className="relative bg-gray-800 text-white flex flex-col vsm:max-sm:vsm:max-sm:absolute vsm:max-md:hidden"
             >
                 <div className="flex justify-between items-center p-4 border-b border-gray-700">
                     <h2 className="text-lg font-semibold">Chats</h2>
@@ -175,13 +164,71 @@ export const Chat = () => {
                     onMouseDown={handleMouseDown}
                 ></div>
             </div>
+            {
+                handlesidebar &&
+                <div
+                    ref={sidebarRef}
+                    style={{ width: sidebarWidth }}
+                    className="relative bg-gray-800 text-white flex flex-col vsm:max-sm:vsm:max-sm:absolute vsm:max-sm:h-screen md:hidden"
+                >
+                    <div className="flex justify-between items-center p-4 border-b border-gray-700">
+                        <div>
+                            <h2 className="text-lg font-semibold">Chats</h2>
+                            <button onClick={handleLogout} className="text-red-400 hover:text-red-600">
+                                Logout
+                            </button>
+                        </div>
+                        <AlignJustify onClick={() => setHandlesidebar(false)} />
+                    </div>
+                    <div className="p-4">
+                        <input
+                            type="text"
+                            placeholder="Search contacts"
+                            className="w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600"
+                            value={searchQuery}
+                            onChange={handleUserSearch}
+                        />
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                        {filteredContacts?.map((contact) => (
+                            <div
+                                key={contact._id}
+                                onClick={() => handleChatSelect(contact)}
+                                className={`cursor-pointer p-4 flex items-center border-b border-gray-700 ${selectedChat?._id === contact._id ? 'bg-gray-700' : ''}`}
+                            >
+                                <img src={contact.avatar} alt="avatar" className="w-10 h-10 rounded-full mr-4" />
+                                <div>
+                                    <h3 className="font-semibold">{contact.name}</h3>
+                                    <p className="text-sm text-gray-400">{contact.lastMessage}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        onClick={handleCreateGroupClick}
+                        className="bg-blue-500 text-white p-4 rounded-lg m-4"
+                    >
+                        Create Group
+                    </button>
+                    <div
+                        className="absolute right-0 top-0 bottom-0 w-2 bg-gray-600 cursor-col-resize"
+                        onMouseDown={handleMouseDown}
+                    ></div>
+                </div>
+
+            }
 
             {/* Chat Area */}
-            <div className="w-full flex flex-col">
+            <div className="w-full flex flex-col vsm:max-md:h-screen">
+                {
+                    !handlesidebar && <div className=' md:hidden flex justify-start w-screen bg-gray-200'><AlignJustify className='md:hidden' onClick={() => setHandlesidebar(true)} /></div> 
+                }
                 {selectedChat ? (
                     <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />
                 ) : (
-                    <div className="flex items-center flex-col justify-center h-full text-gray-500">
+                    <div
+                        style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
+                        className="flex items-center flex-col justify-center h-full text-center text-gray-500">
                         <p>Select a chat to start messaging</p>
                         <p>Send and Receive Message without keeping your phone online.</p>
                     </div>

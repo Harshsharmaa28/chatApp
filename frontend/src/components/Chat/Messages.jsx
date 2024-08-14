@@ -152,8 +152,8 @@ const Messages = ({ selectedChat, selectedUserName }) => {
                         value={inputMessage}
                         onChange={(e) => setInputMessage(e.target.value)}
                     />
-                    <button type="submit" className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                        Send <ArrowRight size={16} />
+                    <button type="submit" className="ml-2 p-2 flex  bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        Send <ArrowRight className='w-5' />
                     </button>
                 </div>
             </form>
