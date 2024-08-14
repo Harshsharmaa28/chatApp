@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
+    const token = JSON.parse(localStorage.getItem('userInfo')).accessToken;
     const [groupName, setGroupName] = useState('');
     const [selectedMembers, setSelectedMembers] = useState([]);
 
@@ -16,6 +17,7 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
                     },
                     credentials: 'include',
                     body: JSON.stringify({
@@ -24,7 +26,7 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
                     })
                 })
                 const data = await createGroup.json();
-                console.log(data)
+                // console.log(data)
             } catch (error) {
                 console.error(error.message);
             }

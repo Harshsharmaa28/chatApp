@@ -8,6 +8,7 @@ import { CircleX } from 'lucide-react';
 
 export const Chat = () => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
+    const token = JSON.parse(localStorage.getItem('userInfo')).accessToken;
     const navigate = useNavigate();
 
     const [selectedChat, setSelectedChat] = useState(null);
@@ -25,18 +26,18 @@ export const Chat = () => {
     });
     const [contacts, setContacts] = useState([]);
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-    const [handlesidebar, setHandlesidebar] = useState(false);
+    const [handlesidebar, setHandlesidebar] = useState(true);
     const sidebarRef = useRef(null);
     
     const handleUserSearch = async (e) => {
         try {
             const query = e.target.value || "";
             setSearchQuery(query);
-
-            const result = await fetch(`${BASE_URL}/users/?search=${encodeURIComponent(query)}`, {
+            const result = await fetch(`${BASE_URL}/users/?search=${query}`, {
                 method: "GET",
                 headers: {
                     'Content-type': 'Application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 credentials: 'include'
             });
@@ -66,6 +67,7 @@ export const Chat = () => {
                 method: "POST",
                 headers: {
                     'Content-type': 'Application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ userId: contact })
@@ -222,7 +224,7 @@ export const Chat = () => {
             {/* Chat Area */}
             <div className="w-full flex flex-col vsm:max-md:h-screen">
                 {
-                    !handlesidebar && <div className=' md:hidden flex justify-start w-screen bg-gray-200'><AlignJustify className='md:hidden' onClick={() => setHandlesidebar(true)} /></div> 
+                    !handlesidebar && <div className=' md:hidden flex justify-start w-screen bg-gray-200'><AlignJustify className='w-10 h-10 md:hidden' onClick={() => setHandlesidebar(true)} /></div> 
                 }
                 {selectedChat ? (
                     <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />

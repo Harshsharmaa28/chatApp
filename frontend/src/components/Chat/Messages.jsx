@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 
 const Messages = ({ selectedChat, selectedUserName }) => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
+    const token = JSON.parse(localStorage.getItem('userInfo')).accessToken;
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [socketConnected, setSocketConnected] = useState(false);
@@ -27,7 +28,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
         socket.current.emit("setup", User);
 
         socket.current.on("connected", () => {
-            console.log("Socket connected");
+            // console.log("Socket connected");
             setSocketConnected(true);
         });
 
@@ -47,7 +48,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
 
     useEffect(() => {
         if (socket.current && socketConnected && selectedChat) {
-            console.log("Joining chat room:", selectedChat);
+            // console.log("Joining chat room:", selectedChat);
             socket.current.emit("join chat", selectedChat);
         }
     }, [socketConnected, selectedChat]);
@@ -66,7 +67,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
             });
             const data = await fetchMessages.json();
             setMessages(data);
-            console.log("Chat messages loaded");
+            // console.log("Chat messages loaded");
         } catch (error) {
             console.error(error.message);
         }
@@ -81,6 +82,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
                 method: "POST",
                 headers: {
                     'Content-type': 'Application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({
@@ -95,10 +97,10 @@ const Messages = ({ selectedChat, selectedUserName }) => {
 
             // Emit the message to the server
             if (socket.current && socketConnected) {
-                console.log("Emitting new message:", newMessage);
+                // console.log("Emitting new message:", newMessage);
                 socket.current.emit("new message", newMessage);
             } else {
-                console.log("Socket not connected");
+                // console.log("Socket not connected");
             }
 
             const response = await send.json();
