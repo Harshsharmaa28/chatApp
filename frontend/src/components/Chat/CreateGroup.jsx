@@ -43,7 +43,7 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
     };
 
     return (
-        <div>
+        <div className=''>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                 <div className="bg-white p-4 rounded-lg w-96">
                     <h3 className="text-xl font-semibold mb-4">Create Group</h3>

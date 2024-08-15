@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AlignJustify, ArrowRight, ClipboardListIcon } from 'lucide-react';
+import { AlignJustify, ArrowRight, ClipboardListIcon, Square, SquareX, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CreateGroup from './CreateGroup';
 import Messages from './Messages';
@@ -75,6 +75,7 @@ export const Chat = () => {
             const data = await createChat.json();
             console.log("Created chat : ", data)
             setSelectedChat(data._id)
+            setHandlesidebar(false)
             // console.log(selectedChat)
         } catch (error) {
             toast.error(error.message)
@@ -172,7 +173,7 @@ export const Chat = () => {
                 <div
                     ref={sidebarRef}
                     style={{ width: sidebarWidth }}
-                    className="relative bg-gray-800 text-white flex flex-col vsm:max-sm:vsm:max-sm:absolute vsm:max-sm:h-screen md:hidden"
+                    className="relative bg-gray-800 text-white flex flex-col vsm:max-sm:vsm:max-sm:absolute vsm:max-sm:h-[100%] md:hidden"
                 >
                     <div className="flex justify-between items-center p-4 border-b border-gray-700">
                         <div>
@@ -181,7 +182,7 @@ export const Chat = () => {
                                 Logout
                             </button>
                         </div>
-                        <AlignJustify onClick={() => setHandlesidebar(false)} />
+                        <X onClick={() => setHandlesidebar(false)} />
                     </div>
                     <div className="p-4">
                         <input
@@ -224,7 +225,7 @@ export const Chat = () => {
             {/* Chat Area */}
             <div className="w-full flex flex-col vsm:max-md:h-screen">
                 {
-                    !handlesidebar && <div className=' md:hidden flex justify-start w-screen bg-gray-200'><AlignJustify className='w-10 h-10 md:hidden' onClick={() => setHandlesidebar(true)} /></div> 
+                    !handlesidebar && <div className=' md:hidden flex h-1 justify-end absolute w-screen py-4 -ml-2'><AlignJustify className='w-7 h-10 md:hidden absolute' onClick={() => setHandlesidebar(true)} /></div> 
                 }
                 {selectedChat ? (
                     <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />

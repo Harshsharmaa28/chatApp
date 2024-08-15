@@ -20,7 +20,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
     const currentUser = JSON.parse(localStorage.getItem("userInfo")).loggedInUser._id;
     const User = JSON.parse(localStorage.getItem("userInfo"));
     const endPoint = process.env.REACT_APP_END_POINT;
-    console.log(endPoint)
+    // console.log(endPoint)
 
     useEffect(() => {
         // Initialize socket connection
@@ -63,7 +63,11 @@ const Messages = ({ selectedChat, selectedUserName }) => {
         if (!selectedChat) return;
         try {
             const fetchMessages = await fetch(`${BASE_URL}/messages/${selectedChat}`, {
-                credentials: 'include'
+                headers: {
+                    'Content-type': 'Application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include',
             });
             const data = await fetchMessages.json();
             setMessages(data);
@@ -135,7 +139,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
                 </div>
             </div>
             <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-                {messages?.map((message, index) => (
+                {messages && messages?.map((message, index) => (
                     <div
                         key={index}
                         className={`${message.sender._id === currentUser ? 'justify-end' : 'justify-start'} flex mb-2`}
