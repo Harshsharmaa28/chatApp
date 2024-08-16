@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AlignJustify, ArrowRight, ClipboardListIcon, Square, SquareX, X } from 'lucide-react';
+import { AlignJustify, ArrowRight, BellDot, ClipboardListIcon, Square, SquareX, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CreateGroup from './CreateGroup';
 import Messages from './Messages';
@@ -10,25 +10,26 @@ export const Chat = () => {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
     const token = JSON.parse(localStorage.getItem('userInfo')).accessToken;
     const navigate = useNavigate();
+    const currentUser = JSON.parse(localStorage.getItem("userInfo")).loggedInUser.name;
 
     const [selectedChat, setSelectedChat] = useState(null);
     const [selectedUserName, setselectedUserName] = useState("");
     const [searchQuery, setSearchQuery] = useState('');
     const [isDragging, setIsDragging] = useState(false);
-    const [sidebarWidth, setSidebarWidth] = useState(() =>{
+    const [sidebarWidth, setSidebarWidth] = useState(() => {
         const screenWidth = window.innerWidth;
-          if (screenWidth>780) {
+        if (screenWidth > 780) {
             return 400;
-          }
-          else {
+        }
+        else {
             return 300;
-          }
+        }
     });
     const [contacts, setContacts] = useState([]);
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
     const [handlesidebar, setHandlesidebar] = useState(true);
     const sidebarRef = useRef(null);
-    
+
     const handleUserSearch = async (e) => {
         try {
             const query = e.target.value || "";
@@ -225,16 +226,27 @@ export const Chat = () => {
             {/* Chat Area */}
             <div className="w-full flex flex-col vsm:max-md:h-screen">
                 {
-                    !handlesidebar && <div className=' md:hidden flex h-1 justify-end absolute w-screen py-4 -ml-2'><AlignJustify className='w-7 h-10 md:hidden absolute' onClick={() => setHandlesidebar(true)} /></div> 
+                    !handlesidebar && <div className=' md:hidden flex h-1 justify-end absolute w-screen py-4 -ml-2'><AlignJustify className='w-7 h-10 md:hidden absolute' onClick={() => setHandlesidebar(true)} /></div>
                 }
                 {selectedChat ? (
                     <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />
                 ) : (
-                    <div
-                        style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
-                        className="flex items-center flex-col justify-center h-full text-center text-gray-500">
-                        <p>Select a chat to start messaging</p>
-                        <p>Send and Receive Message without keeping your phone online.</p>
+                    <div style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
+                    className='h-screen flex flex-col overflow-hidden'>
+                        <div className='flex items-center justify-end vsm:max-sm:justify-start gap-5 px-10 vsm:max-sm:px-5 py-4'>
+                            <BellDot className='vsm:max-sm:hidden' />
+                            <div className='flex items-center justify-center'>
+                                <img className=' w-10 h-10 object-cover rounded-full' src="https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" alt="" />
+                                {/* <span className='px-4 text-2xl'>{currentUser}</span> */}
+                            </div>
+                            <BellDot className='sm:hidden' />
+                        </div>
+                        <div
+                            style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
+                            className="flex items-center flex-col justify-center h-full text-center text-gray-500">
+                            <p>Select a chat to start messaging</p>
+                            <p>Send and Receive Message without keeping your phone online.</p>
+                        </div>
                     </div>
                 )}
             </div>

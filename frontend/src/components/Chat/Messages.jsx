@@ -131,7 +131,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
     };
 
     return (
-        <>
+        <div className='h-screen flex flex-col'>
             <div className="p-4 bg-gray-200 border-b border-gray-400">
                 <div className='flex gap-2'>
                     <img onClick={handleAvatarClick} className='hover:cursor-pointer w-10 h-10 rounded-full object-cover' src="https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png" alt="" />
@@ -171,7 +171,7 @@ const Messages = ({ selectedChat, selectedUserName }) => {
                 user={curUser}
                 onSave={handleSaveProfile}
             />
-        </>
+        </div>
     );
 };
 
