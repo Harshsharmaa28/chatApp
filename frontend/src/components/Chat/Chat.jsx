@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AlignJustify, ArrowRight, BellDot, ClipboardListIcon, Square, SquareX, X } from 'lucide-react';
+import { AlignJustify, ArrowRight, BellDot, ClipboardListIcon, Search, Square, SquareX, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CreateGroup from './CreateGroup';
 import Messages from './Messages';
@@ -27,7 +27,7 @@ export const Chat = () => {
     });
     const [contacts, setContacts] = useState([]);
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
-    const [handlesidebar, setHandlesidebar] = useState(true);
+    const [handlesidebar, setHandlesidebar] = useState(false);
     const sidebarRef = useRef(null);
 
     const handleUserSearch = async (e) => {
@@ -134,7 +134,7 @@ export const Chat = () => {
                         Logout
                     </button>
                 </div>
-                <div className="p-4">
+                <div className={`p-4 ${!selectedChat ? 'hidden' : ''} `}>
                     <input
                         type="text"
                         placeholder="Search contacts"
@@ -226,25 +226,48 @@ export const Chat = () => {
             {/* Chat Area */}
             <div className="w-full flex flex-col vsm:max-md:h-screen">
                 {
-                    !handlesidebar && <div className=' md:hidden flex h-1 justify-end absolute w-screen py-4 -ml-2'><AlignJustify className='w-7 h-10 md:hidden absolute' onClick={() => setHandlesidebar(true)} /></div>
+                    !handlesidebar && <div className=' md:hidden flex h-1 justify-end absolute w-screen py-4 -ml-2'><AlignJustify className={`w-7 text-white h-10 md:hidden absolute ${selectedChat ? '' : ''}`} onClick={() => setHandlesidebar(true)} /></div>
                 }
                 {selectedChat ? (
                     <Messages selectedChat={selectedChat} selectedUserName={selectedUserName} />
                 ) : (
                     <div style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
-                    className='h-screen flex flex-col overflow-hidden'>
-                        <div className='flex items-center justify-end vsm:max-sm:justify-start gap-5 px-10 vsm:max-sm:px-5 py-4'>
-                            <BellDot className='vsm:max-sm:hidden' />
-                            <div className='flex items-center justify-center'>
-                                <img className=' w-10 h-10 object-cover rounded-full' src="https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" alt="" />
-                                {/* <span className='px-4 text-2xl'>{currentUser}</span> */}
+                        className='h-screen flex flex-col overflow-hidden'>
+                        <div className='flex md:justify-around bg-gray-700'>
+                            <div className="p-4">
+                                <input
+                                    type="text"
+                                    placeholder={` ${ window.innerWidth<780 ? 'Coming soon !' : 'Search Contact'}`}
+                                    className="w-full md:w-[30rem] p-2 rounded-lg bg-gray-700 text-white border border-gray-500"
+                                    value={searchQuery}
+                                    onChange={handleUserSearch}
+                                />
                             </div>
-                            <BellDot className='sm:hidden' />
+                            <div className='flex items-center justify-end vsm:max-sm:justify-start gap-5 md:gap-10 px-10 vsm:max-sm:px-2 py-4'>
+                                <BellDot className='text-white vsm:max-sm:hidden' />
+                                <img className='vsm:max-sm: w-7 h-7 md:w-10 md:h-10 object-cover rounded-full' src="https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" alt="" />
+                                <BellDot className=' text-white sm:hidden' />
+                            </div>
                         </div>
+                        {/* <div className="flex-1 overflow-y-auto bg-gray-700 border-white px-2">
+                            {filteredContacts?.map((contact) => (
+                                <div
+                                    key={contact._id}
+                                    onClick={() => handleChatSelect(contact)}
+                                    className={`cursor-pointer p-4 flex items-center text-white border-b border-white ${selectedChat?._id === contact._id ? 'bg-gray-700' : ''}`}
+                                >
+                                    <img src={contact.avatar} alt="avatar" className="w-10 h-10 rounded-full mr-4" />
+                                    <div>
+                                        <h3 className="font-semibold">{contact.name}</h3>
+                                        <p className="text-sm text-gray-400">{contact.lastMessage}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div> */}
                         <div
                             style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
                             className="flex items-center flex-col justify-center h-full text-center text-gray-500">
-                            <p>Select a chat to start messaging</p>
+                            <p>Select a chat from Side Bar to start messaging</p>
                             <p>Send and Receive Message without keeping your phone online.</p>
                         </div>
                     </div>

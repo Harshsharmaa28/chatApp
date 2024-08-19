@@ -132,20 +132,20 @@ const Messages = ({ selectedChat, selectedUserName }) => {
 
     return (
         <div className='h-screen flex flex-col'>
-            <div className="p-4 bg-gray-200 border-b border-gray-400">
+            <div className="p-4 bg-gray-700 border-b border-gray-400">
                 <div className='flex gap-2'>
                     <img onClick={handleAvatarClick} className='hover:cursor-pointer w-10 h-10 rounded-full object-cover' src="https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png" alt="" />
-                    <h3 className="text-xl py-1 font-semibold">{selectedUserName}</h3>
+                    <h3 className="text-xl py-1 text-white font-semibold">{selectedUserName}</h3>
                 </div>
             </div>
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
+            <div className="flex-1 p-4 overflow-y-auto h-auto bg-gray-100">
                 {messages && messages?.map((message, index) => (
                     <div
                         key={index}
                         className={`${message.sender._id === currentUser ? 'justify-end' : 'justify-start'} flex mb-2`}
                     >
-                        <div className={`p-2 rounded-lg ${message.sender._id === currentUser ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
-                            <p>{message.content}</p>
+                        <div className={`overflow-auto p-2 rounded-lg ${message.sender._id === currentUser ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
+                            <p className=''>{message.content}</p>
                         </div>
                     </div>
                 ))}
