@@ -45,7 +45,7 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
     return (
         <div className=''>
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div className="bg-white p-4 rounded-lg w-96">
+                <div className="bg-gray-800 text-white p-4 rounded-lg w-96">
                     <h3 className="text-xl font-semibold mb-4">Create Group</h3>
                     <input
                         type="text"
@@ -54,8 +54,9 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
                         value={groupName}
                         onChange={(e) => setGroupName(e.target.value)}
                     />
-                    <div className="mb-4">
+                    <div className="mb-4 flex flex-col overflow-scroll h-40">
                         <h4 className="text-lg font-medium">Add Members</h4>
+                        <div>
                         {contacts?.map((contact) => (
                             <div key={contact._id} className="flex items-center mb-2">
                                 <input
@@ -65,11 +66,12 @@ const CreateGroup = ({contacts, setIsGroupModalOpen}) => {
                                     checked={selectedMembers?.includes(contact._id)}
                                     onChange={() => toggleMemberSelection(contact._id)}
                                 />
-                                <label htmlFor={`contact-${contact._id}`} className="text-gray-800">
+                                <label htmlFor={`contact-${contact._id}`} className="text-white">
                                     {contact.name}
                                 </label>
                             </div>
                         ))}
+                        </div>
                     </div>
                     <div className="flex justify-end">
                         <button

@@ -237,7 +237,7 @@ export const Chat = () => {
                             <div className="p-4">
                                 <input
                                     type="text"
-                                    placeholder={` ${ window.innerWidth<780 ? 'Coming soon !' : 'Search Contact'}`}
+                                    placeholder={` ${'Search Contact'}`}
                                     className="w-full md:w-[30rem] p-2 rounded-lg bg-gray-700 text-white border border-gray-500"
                                     value={searchQuery}
                                     onChange={handleUserSearch}
@@ -249,7 +249,7 @@ export const Chat = () => {
                                 <BellDot className=' text-white sm:hidden' />
                             </div>
                         </div>
-                        {/* <div className="flex-1 overflow-y-auto bg-gray-700 border-white px-2">
+                        { searchQuery && <div className="md:hidden flex-1 rounded-b-lg absolute mx-2 h-[50%] justify-center items-center flex-wrap mt-[4.6rem] w-[95%] overflow-y-auto bg-gray-700 border-white px-2">
                             {filteredContacts?.map((contact) => (
                                 <div
                                     key={contact._id}
@@ -263,7 +263,7 @@ export const Chat = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div> */}
+                        </div>}
                         <div
                             style={{ backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
                             className="flex items-center flex-col justify-center h-full text-center text-gray-500">

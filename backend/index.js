@@ -52,7 +52,10 @@ io.on("connection", (socket) => {
         // socket.join(userData.loggedInUser._id);
         socket.emit("connected");
     });
-
+    socket.on('typing',(userName) => {
+        // console.log("typing kar rahe hai",userName);
+        socket.broadcast.emit('notifyTyping',userName);
+    })
     socket.on("join chat", (room) => {
         // console.log("join kar liya hai")
         socket.join(room);

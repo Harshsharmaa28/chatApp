@@ -13,6 +13,7 @@ export const Login = () => {
     email: '',
     password: '',
   });
+  const [Loading,setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -25,6 +26,7 @@ export const Login = () => {
     e.preventDefault();
     // Here you would typically send formData to your API for authentication
     try {
+      setLoading(true)
       const response = await fetch(`${BASE_URL}/users/login`,{
         method: "POST",
         headers: {
@@ -36,6 +38,7 @@ export const Login = () => {
   
       const data = await response.json();
       // console.log(data.accessToken)
+      setLoading(false)
       if (response.ok) {
         toast.success("Login successfully")
         localStorage.setItem("userInfo",JSON.stringify(data))
@@ -112,6 +115,7 @@ export const Login = () => {
                 </div>
                 <div>
                   <button
+                  disabled={Loading}
                     type="submit"
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >

@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export const SignUp = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
+  const [Loading,setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,6 +23,7 @@ export const SignUp = () => {
   e.preventDefault();
 
   try {
+    setLoading(true);
     const response = await fetch(`${BASE_URL}/users/signup`, {
       method: "POST",
       headers: {
@@ -31,6 +33,7 @@ export const SignUp = () => {
     });
 
     const data = await response.json(); // Parsing the JSON response
+    setLoading(true);
 
     if (response.ok) { 
       navigate('/login') 
@@ -111,6 +114,7 @@ export const SignUp = () => {
                 </div>
                 <div>
                   <button
+                  disabled={Loading}
                     type="submit"
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
